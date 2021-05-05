@@ -25,6 +25,7 @@ option(JSON_BuildTests "Build the unit tests when BUILD_TESTING is enabled." ON)
 option(JSON_Install "Install CMake targets during install step." ON)
 option(JSON_MultipleHeaders "Use non-amalgamated version of the library." OFF)
 option(JSON_ImplicitConversions "Enable implicit conversions." ON)
+option(JSON_SystemInclude "Include as system headers (skip for clang-tidy)" OFF)
 
 ##
 ## CONFIGURATION
@@ -54,6 +55,10 @@ if (NOT JSON_ImplicitConversions)
     message(STATUS "Implicit conversions are disabled")
 endif()
 
+if (JSON_SystemInclude)
+    set(NLOHMANN_JSON_SYSTEM_INCLUDE "SYSTEM")
+endif()
+
 ##
 ## TARGET
 ## create target and add include path
@@ -74,7 +79,7 @@ target_compile_definitions(
 
 target_include_directories(
     ${NLOHMANN_JSON_TARGET_NAME}
-    INTERFACE
+    ${NLOHMANN_JSON_SYSTEM_INCLUDE} INTERFACE
     $<BUILD_INTERFACE:${NLOHMANN_JSON_INCLUDE_BUILD_DIR}>
     $<INSTALL_INTERFACE:include>
 )
